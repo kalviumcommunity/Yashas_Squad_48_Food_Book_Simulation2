@@ -12,11 +12,19 @@ protected:
     string cuisine_type;
     vector<string> steps;
 
+    // Static variables to track total number of recipes and total views
+    static int totalRecipes;
+    static int totalViews;
+
 public:
     Recipe(string n, vector<string> ingr, string instr, string ctype, vector<string> stps)
-        : name(n), ingredients(ingr), instructions(instr), cuisine_type(ctype), steps(stps) {}
+        : name(n), ingredients(ingr), instructions(instr), cuisine_type(ctype), steps(stps) {
+        totalRecipes++; // Increment the total number of recipes each time a new one is created
+    }
 
-    virtual ~Recipe() {} // Virtual destructor to ensure proper cleanup for derived classes
+    virtual ~Recipe() {
+        totalRecipes--; // Decrement totalRecipes when a recipe is destroyed
+    }
 
     void display_recipe() {
         cout << "Recipe: " << this->name << endl;
@@ -30,12 +38,27 @@ public:
         for (size_t i = 0; i < this->steps.size(); ++i) {
             cout << i + 1 << ". " << this->steps[i] << endl;
         }
+        totalViews++; // Increment totalViews each time a recipe is viewed
     }
 
     string get_name() const {
         return this->name;
     }
+
+    // Static function to get total number of recipes
+    static int getTotalRecipes() {
+        return totalRecipes;
+    }
+
+    // Static function to get total views
+    static int getTotalViews() {
+        return totalViews;
+    }
 };
+
+// Initialize static variables
+int Recipe::totalRecipes = 0;
+int Recipe::totalViews = 0;
 
 // Derived classes for different regions
 class North : public Recipe {
@@ -50,25 +73,20 @@ public:
         : Recipe(n, ingr, instr, "South Indian", stps) {}
 };
 
-
-
-
-
-
-class Northeast : public Recipe {
+class East : public Recipe {
 public:
-    Northeast(string n, vector<string> ingr, string instr, vector<string> stps)
-        : Recipe(n, ingr, instr, "Northeast Indian", stps) {}
+    East(string n, vector<string> ingr, string instr, vector<string> stps)
+        : Recipe(n, ingr, instr, "East Indian", stps) {}
 };
 
-class Northwest : public Recipe {
+class West : public Recipe {
 public:
-    Northwest(string n, vector<string> ingr, string instr, vector<string> stps)
-        : Recipe(n, ingr, instr, "Northwest Indian", stps) {}
+    West(string n, vector<string> ingr, string instr, vector<string> stps)
+        : Recipe(n, ingr, instr, "West Indian", stps) {}
 };
 
 int main() {
-    // North Indian Recipes (Using dynamic memory allocation)
+    // North Indian Recipes
     vector<Recipe*> northRecipes = {
         new North("Biryani", {"Rice", "Chicken", "Spices"}, "Cook rice, add chicken and spices", {
             "Rinse the rice thoroughly until the water runs clear.",
@@ -93,10 +111,22 @@ int main() {
             "Add the paneer cubes and simmer for 5-7 minutes.",
             "Garnish with fresh coriander leaves.",
             "Serve hot with naan or rice."
+        }),
+        new North("Rajma", {"Kidney Beans", "Onions", "Tomatoes"}, "Cook kidney beans with spices", {
+            "Soak the kidney beans overnight.",
+            "Boil the beans in a pressure cooker until soft.",
+            "Heat oil in a pan and sauté onions until golden brown.",
+            "Add ginger-garlic paste and cook until fragrant.",
+            "Add chopped tomatoes and cook until soft.",
+            "Add spices like cumin, coriander, and garam masala.",
+            "Add the boiled kidney beans and mix well.",
+            "Simmer for 10-15 minutes until flavors combine.",
+            "Garnish with fresh coriander leaves.",
+            "Serve hot with rice."
         })
     };
 
-    // South Indian Recipes (Using dynamic memory allocation)
+    // South Indian Recipes
     vector<Recipe*> southRecipes = {
         new South("Fish Curry", {"Coconut", "Rice", "Fish"}, "Cook fish with coconut and spices", {
             "Grate fresh coconut and extract the coconut milk.",
@@ -121,66 +151,83 @@ int main() {
             "Flip the dosa and cook the other side for a few seconds.",
             "Serve hot with coconut chutney and sambar.",
             "Enjoy the dosa!"
+        }),
+        new South("Hyderabadi Biryani", {"Basmati Rice", "Mutton", "Spices"}, "Cook rice and marinated mutton in layers", {
+            "Marinate mutton with yogurt, spices, and lemon juice for 2 hours.",
+            "Cook rice with whole spices until 70% done.",
+            "Layer the marinated mutton and rice in a large pot.",
+            "Seal the pot with dough to trap steam.",
+            "Cook on low heat for 30-40 minutes.",
+            "Unseal the pot and gently mix the biryani.",
+            "Serve hot with raita and a boiled egg."
         })
     };
 
-    // Northeast Indian Recipes (Using dynamic memory allocation)
-    vector<Recipe*> northeastRecipes = {
-        new Northeast("Bamboo Pork", {"Bamboo Shoots", "Pork", "Spices"}, "Cook pork with bamboo shoots and spices", {
-            "Clean and chop the bamboo shoots into thin slices.",
-            "Boil the bamboo shoots in water to remove bitterness.",
-            "Cut the pork into bite-sized pieces.",
-            "Marinate the pork with salt, ginger, and garlic paste.",
-            "Heat oil in a pot and add whole spices.",
-            "Add the marinated pork and cook until browned.",
-            "Add the boiled bamboo shoots and stir well.",
-            "Pour in water or broth and bring to a boil.",
-            "Simmer on low heat until the pork is tender.",
-            "Garnish with fresh herbs and serve hot."
+    // East Indian Recipes
+    vector<Recipe*> eastRecipes = {
+        new East("Macher Jhol", {"Fish", "Potatoes", "Spices"}, "Cook fish with potatoes and spices", {
+            "Marinate the fish with turmeric and salt.",
+            "Heat mustard oil in a pan and fry the fish pieces lightly.",
+            "In the same pan, add cumin seeds, ginger, and green chilies.",
+            "Add chopped tomatoes and cook till soft.",
+            "Add spices like cumin, coriander, and turmeric powder.",
+            "Add fried fish and potato slices.",
+            "Pour water and bring to a simmer.",
+            "Cook until the potatoes are tender.",
+            "Garnish with fresh coriander and serve hot with rice."
         }),
-        new Northeast("Fermented Rice", {"Rice", "Fermented Soybeans", "Ginger"}, "Cook rice with fermented soybeans", {
-            "Rinse the rice and soak it in water for 30 minutes.",
-            "Grind the fermented soybeans into a paste.",
-            "Heat oil in a pan and sauté ginger until fragrant.",
-            "Add the soybean paste and cook for a few minutes.",
-            "Mix the paste with cooked rice.",
-            "Steam the mixture until fully cooked.",
-            "Garnish with fresh herbs.",
-            "Serve hot with a side of vegetable curry.",
-            "Enjoy the unique flavors of the dish."
+        new East("Chingri Malai Curry", {"Prawns", "Coconut Milk", "Spices"}, "Cook prawns in coconut milk", {
+            "Clean the prawns and marinate with turmeric and salt.",
+            "Heat mustard oil in a pan and lightly fry the prawns.",
+            "In the same pan, add bay leaves, cumin seeds, and green chilies.",
+            "Add coconut milk and bring to a simmer.",
+            "Add the fried prawns and cook for a few minutes.",
+            "Let the curry thicken to your desired consistency.",
+            "Garnish with fresh coriander and serve hot with steamed rice."
+        }),
+        new East("Litti Chokha", {"Wheat Flour", "Gram Flour", "Eggplant"}, "Bake stuffed dough balls with chokha", {
+            "Prepare dough using wheat flour and water.",
+            "Make a stuffing using roasted gram flour, spices, and mustard oil.",
+            "Shape the dough into balls and stuff them with the mixture.",
+            "Bake the littis until golden brown.",
+            "Roast eggplant, mash it with mustard oil, onions, and spices to make chokha.",
+            "Serve the litti with chokha and ghee."
         })
     };
 
-    // Northwest Indian Recipes (Using dynamic memory allocation)
-    vector<Recipe*> northwestRecipes = {
-        new Northwest("Kebab", {"Wheat", "Meat", "Spices"}, "Grill meat with spices", {
-            "Prepare the dough using wheat flour and water.",
-            "Knead the dough until smooth and pliable.",
-            "Cut the meat into small pieces and marinate with spices.",
-            "Shape the marinated meat into kebabs.",
-            "Preheat the grill to a medium-high temperature.",
-            "Grill the kebabs until they are browned on all sides.",
-            "Baste the kebabs with butter or ghee while grilling.",
-            "Cook the kebabs until they are fully cooked inside.",
-            "Remove the kebabs from the grill and let them rest.",
-            "Serve the kebabs hot with mint chutney and naan."
+    // West Indian Recipes
+    vector<Recipe*> westRecipes = {
+        new West("Pav Bhaji", {"Mixed Vegetables", "Pav Bread", "Spices"}, "Cook vegetables and serve with pav bread", {
+            "Boil and mash mixed vegetables (potatoes, peas, carrots).",
+            "Heat butter in a pan, add onions and sauté till golden.",
+            "Add ginger-garlic paste and sauté.",
+            "Add chopped tomatoes and cook until soft.",
+            "Add spices like pav bhaji masala, red chili powder, and salt.",
+            "Add the mashed vegetables and cook for 10-15 minutes.",
+            "Toast the pav bread with butter.",
+            "Serve hot with buttered pav, onions, and lemon wedges."
         }),
-        new Northwest("Mathri", {"Flour", "Butter", "Sugar"}, "Prepare and deep-fry dough discs", {
-            "Mix flour, sugar, and melted butter to form a dough.",
-            "Roll out the dough and cut it into small discs.",
-            "Heat oil in a pan.",
-            "Deep fry the discs until golden brown.",
-            "Let them cool and store in an airtight container.",
-            "Serve with tea or coffee.",
-            "Enjoy the crunchy texture.",
-            "Best with a sprinkle of powdered sugar on top."
+        new West("Vada Pav", {"Potatoes", "Chickpea Flour", "Pav Bread"}, "Deep fry potato fritters and serve with bread", {
+            "Boil and mash potatoes with spices.",
+            "Shape the potato mixture into small balls.",
+            "Dip them in chickpea flour batter and deep fry until golden brown.",
+            "Serve the vada in a pav with chutney and fried green chilies."
+        }),
+        new West("Dhokla", {"Gram Flour", "Yogurt", "Spices"}, "Steam gram flour batter to make spongy cakes", {
+            "Mix gram flour with yogurt, water, and spices to form a batter.",
+            "Let the batter ferment for a few hours.",
+            "Add fruit salt or baking soda and mix well.",
+            "Pour the batter into a greased dish and steam until cooked.",
+            "Prepare tempering with mustard seeds, curry leaves, and green chilies.",
+            "Pour the tempering over the steamed dhokla.",
+            "Serve with chutney."
         })
     };
 
     int cuisineChoice, dishChoice;
     while (true) {
         cout << "\nChoose a cuisine region by number:" << endl;
-        cout << "1. North Indian\n2. South Indian \n3. Northeast Indian\n4. Northwest Indian\n5. Exit" << endl;
+        cout << "1. North Indian\n2. South Indian\n3. East Indian\n4. West Indian\n5. Exit" << endl;
         cin >> cuisineChoice;
 
         if (cuisineChoice == 5) {
@@ -197,10 +244,10 @@ int main() {
                 chosenRecipes = southRecipes;
                 break;
             case 3:
-                chosenRecipes = northeastRecipes;
+                chosenRecipes = eastRecipes;
                 break;
             case 4:
-                chosenRecipes = northwestRecipes;
+                chosenRecipes = westRecipes;
                 break;
             default:
                 cout << "Invalid choice. Please try again." << endl;
@@ -218,13 +265,17 @@ int main() {
         } else {
             cout << "Invalid dish choice. Please try again." << endl;
         }
+
+        // Display total recipes and views after each selection
+        cout << "\nTotal Recipes: " << Recipe::getTotalRecipes() << endl;
+        cout << "Total Views: " << Recipe::getTotalViews() << endl;
     }
 
     // Freeing dynamically allocated memory
     for (auto recipe : northRecipes) delete recipe;
     for (auto recipe : southRecipes) delete recipe;
-    for (auto recipe : northeastRecipes) delete recipe;
-    for (auto recipe : northwestRecipes) delete recipe;
+    for (auto recipe : eastRecipes) delete recipe;
+    for (auto recipe : westRecipes) delete recipe;
 
     return 0;
 }
