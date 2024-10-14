@@ -22,6 +22,7 @@ public:
         totalRecipes++;
     }
 
+    // Destructor
     virtual ~Recipe() {
         totalRecipes--;
     }
@@ -71,8 +72,14 @@ int Recipe::totalViews = 0;
 // Derived classes for different regions
 class North : public Recipe {
 public:
+    // Constructor
     North(string n, vector<string> ingr, string instr, vector<string> stps)
         : Recipe(n, ingr, instr, "North Indian", stps) {}
+
+    // Destructor
+    ~North() {
+        // Additional cleanup if needed
+    }
 
     // Implementing the abstract function in the derived class
     void showRecipeDetails() override {
@@ -82,8 +89,14 @@ public:
 
 class South : public Recipe {
 public:
+    // Constructor
     South(string n, vector<string> ingr, string instr, vector<string> stps)
         : Recipe(n, ingr, instr, "South Indian", stps) {}
+
+    // Destructor
+    ~South() {
+        // Additional cleanup if needed
+    }
 
     // Implementing the abstract function in the derived class
     void showRecipeDetails() override {
@@ -93,8 +106,14 @@ public:
 
 class East : public Recipe {
 public:
+    // Constructor
     East(string n, vector<string> ingr, string instr, vector<string> stps)
         : Recipe(n, ingr, instr, "East Indian", stps) {}
+
+    // Destructor
+    ~East() {
+        // Additional cleanup if needed
+    }
 
     // Implementing the abstract function in the derived class
     void showRecipeDetails() override {
@@ -234,15 +253,15 @@ int main() {
             display_selected_recipes(allRecipes, "East Indian");
             break;
         case 4:
-            cout << "Exiting program. Thank you!" << endl;
+            cout << "Exiting..." << endl;
             break;
         default:
             cout << "Invalid choice! Please try again." << endl;
         }
     } while (choice != 4);
 
-    // Cleanup dynamically allocated memory
-    for (auto& recipe : allRecipes) {
+    // Cleanup allocated memory
+    for (const auto& recipe : allRecipes) {
         delete recipe;
     }
 
