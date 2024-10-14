@@ -3,7 +3,7 @@
 #include <string>
 using namespace std;
 
-// Base class: Recipe
+// Abstract base class: Recipe (provides an interface for derived classes)
 class Recipe {
 protected:
     string name;
@@ -16,6 +16,7 @@ protected:
     static int totalViews;
 
 public:
+    // Constructor to initialize recipe attributes
     Recipe(string n, vector<string> ingr, string instr, string ctype, vector<string> stps)
         : name(n), ingredients(ingr), instructions(instr), cuisine_type(ctype), steps(stps) {
         totalRecipes++;
@@ -25,6 +26,7 @@ public:
         totalRecipes--;
     }
 
+    // Function to display the recipe
     void display_recipe() {
         cout << "Recipe: " << this->name << endl;
         cout << "Cuisine Type: " << this->cuisine_type << endl;
@@ -40,6 +42,7 @@ public:
         totalViews++;
     }
 
+    // Getter functions for name and cuisine type
     string get_name() const {
         return this->name;
     }
@@ -48,6 +51,7 @@ public:
         return this->cuisine_type;
     }
 
+    // Static functions to get total recipes and views
     static int getTotalRecipes() {
         return totalRecipes;
     }
@@ -55,6 +59,9 @@ public:
     static int getTotalViews() {
         return totalViews;
     }
+
+    // Pure virtual function (abstraction) - must be implemented in derived classes
+    virtual void showRecipeDetails() = 0; // Abstract function for showing recipe details
 };
 
 // Initialize static variables
@@ -66,18 +73,33 @@ class North : public Recipe {
 public:
     North(string n, vector<string> ingr, string instr, vector<string> stps)
         : Recipe(n, ingr, instr, "North Indian", stps) {}
+
+    // Implementing the abstract function in the derived class
+    void showRecipeDetails() override {
+        display_recipe(); // Calling the base class function to show details
+    }
 };
 
 class South : public Recipe {
 public:
     South(string n, vector<string> ingr, string instr, vector<string> stps)
         : Recipe(n, ingr, instr, "South Indian", stps) {}
+
+    // Implementing the abstract function in the derived class
+    void showRecipeDetails() override {
+        display_recipe(); // Calling the base class function to show details
+    }
 };
 
 class East : public Recipe {
 public:
     East(string n, vector<string> ingr, string instr, vector<string> stps)
         : Recipe(n, ingr, instr, "East Indian", stps) {}
+
+    // Implementing the abstract function in the derived class
+    void showRecipeDetails() override {
+        display_recipe(); // Calling the base class function to show details
+    }
 };
 
 // Function to display cuisine-specific recipes and allow recipe selection
@@ -105,7 +127,7 @@ void display_selected_recipes(const vector<Recipe*>& recipes, const string& sele
     cin >> recipe_choice;
 
     if (recipe_choice >= 1 && recipe_choice <= filtered_recipes.size()) {
-        filtered_recipes[recipe_choice - 1]->display_recipe();
+        filtered_recipes[recipe_choice - 1]->showRecipeDetails(); // Call the abstract method
     } else {
         cout << "Invalid recipe selection!" << endl;
     }
@@ -212,18 +234,17 @@ int main() {
             display_selected_recipes(allRecipes, "East Indian");
             break;
         case 4:
-            cout << "Exiting the program. Goodbye!" << endl;
+            cout << "Exiting program. Thank you!" << endl;
             break;
         default:
             cout << "Invalid choice! Please try again." << endl;
         }
+    } while (choice != 4);
 
-    } while (choice != 4);  // Continue until the user selects 'Exit'
-
-    // Cleanup: Deleting dynamically allocated objects to prevent memory leaks
-    for (Recipe* r : northRecipes) delete r;
-    for (Recipe* r : southRecipes) delete r;
-    for (Recipe* r : eastRecipes) delete r;
+    // Cleanup dynamically allocated memory
+    for (auto& recipe : allRecipes) {
+        delete recipe;
+    }
 
     return 0;
 }
