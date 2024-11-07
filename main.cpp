@@ -56,7 +56,7 @@ public:
         return totalViews;
     }
 
-    // Pure virtual function - must be implemented in derived classes
+    // Virtual function for polymorphism
     virtual void showRecipeDetails() = 0;
 };
 
@@ -72,8 +72,9 @@ public:
 
     ~North() {}
 
+    // Polymorphism used here: Overriding the showRecipeDetails method for North Indian recipes
     void showRecipeDetails() override {
-        display_recipe(); 
+        display_recipe();
     }
 };
 
@@ -85,8 +86,9 @@ public:
 
     ~South() {}
 
+    // Polymorphism used here: Overriding the showRecipeDetails method for South Indian recipes
     void showRecipeDetails() override {
-        display_recipe(); 
+        display_recipe();
     }
 };
 
@@ -98,8 +100,9 @@ public:
 
     ~East() {}
 
+    // Polymorphism used here: Overriding the showRecipeDetails method for East Indian recipes
     void showRecipeDetails() override {
-        display_recipe(); 
+        display_recipe();
     }
 };
 
@@ -125,6 +128,7 @@ void display_selected_recipes(const vector<Recipe*>& recipes, const string& sele
     cin >> recipe_choice;
 
     if (recipe_choice >= 1 && recipe_choice <= filtered_recipes.size()) {
+        // Polymorphism used here: the base class pointer calls the overridden showRecipeDetails method
         filtered_recipes[recipe_choice - 1]->showRecipeDetails();
     } else {
         cout << "Invalid recipe selection!" << endl;
@@ -132,6 +136,7 @@ void display_selected_recipes(const vector<Recipe*>& recipes, const string& sele
 }
 
 int main() {
+    // Polymorphism with vector of base class pointers pointing to derived class objects
     vector<Recipe*> allRecipes = {
         new North("Biryani", {"Rice", "Chicken", "Spices"}, "Cook rice, add chicken and spices", {
             "Rinse rice.", "Soak rice.", "Marinate chicken.", "Cook rice and chicken."}),
